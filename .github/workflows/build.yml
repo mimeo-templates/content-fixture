@@ -1,0 +1,43 @@
+name: build
+
+on:
+  push:
+  schedule:
+    - cron: "17 6 * * 1" # Mondays 06:17 UTC
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        template:
+          - eleventy-chapbook
+          - eleventy-pamphlet
+          - eleventy-prose-blog
+          - eleventy-tech-blog
+    steps:
+      - name: Check out ${{ matrix.template }}
+        uses: actions/checkout@v4
+        with:
+          repository: tepiton/${{ matrix.template }}
+
+      - name: Check out the fixture corpus
+        uses: actions/checkout@v4
+        with:
+          path: fixture
+
+      - name: Overlay the corpus onto the template content
+        run: cp -R fixture/content/. content/
+
+      - name: Use Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
