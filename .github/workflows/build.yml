@@ -21,7 +21,7 @@ jobs:
       - name: Check out ${{ matrix.template }}
         uses: actions/checkout@v4
         with:
-          repository: tepiton/${{ matrix.template }}
+          repository: mimeo-templates/${{ matrix.template }}
 
       - name: Check out the fixture corpus
         uses: actions/checkout@v4
